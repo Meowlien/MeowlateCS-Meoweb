@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "MfPDK+SL/D/QZRLmj0Js8hGj5oaYPWVIKvkMInY4ltR2+Ugv7yNol0IX7SMs3c17uNimjCfyOeRpMTKkk2xTbw==",
+  "success": true,
+  "projectFilePath": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Meowlate\\MeowlateCS-Meoweb\\Meoweb\\Meoweb.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\swashbuckle.aspnetcore\\6.2.3\\swashbuckle.aspnetcore.6.2.3.nupkg.sha512",
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.2.3\\swashbuckle.aspnetcore.swagger.6.2.3.nupkg.sha512",
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.2.3\\swashbuckle.aspnetcore.swaggergen.6.2.3.nupkg.sha512",
+    "C:\\Users\\waylon.yuen\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.2.3\\swashbuckle.aspnetcore.swaggerui.6.2.3.nupkg.sha512"
+  ],
+  "logs": []
+}
