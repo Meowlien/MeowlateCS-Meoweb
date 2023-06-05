@@ -1,7 +1,9 @@
-﻿using IResult = Meoweb.Commons.Data.IResult;
+﻿
 
 // Todo: 此頁所有功能應遷移至 Meowkit 作爲 Common Method
 namespace Meoweb.Commons {
+
+    using IResult = Data.IResult;
 
     // For 產生響應内容
     /// <summary>

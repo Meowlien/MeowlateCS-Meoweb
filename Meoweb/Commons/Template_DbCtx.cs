@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Meoweb.AppLibs;
+using Microsoft.Extensions.Logging;
 
 namespace Meoweb.Commons {
 
@@ -8,19 +8,22 @@ namespace Meoweb.Commons {
     /// </summary>
     public abstract class DbCtxTemplate : DbContext {
 
-        #region Constructor 構建式
         protected ILogger Logger { get; set; }
-        public DbCtxTemplate(ILogger<DbCtxTemplate> logger) {
+
+
+        public DbCtxTemplate(ILogger logger) {
             Logger = logger;
         }
-        public DbCtxTemplate(DbContextOptions<DbCtxTemplate> options, ILogger<DbCtxTemplate> logger)
+        public DbCtxTemplate(DbContextOptions options, ILogger logger)
             : base(options) {
             Logger = logger;
         }
-        #endregion
 
+
+        // 連綫
         protected abstract void Connect(DbContextOptionsBuilder optionsBuilder);
 
+        // 設定
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
             // 僅配置一次
             if (optionsBuilder.IsConfigured == false) {

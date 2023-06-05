@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Meoweb.Models {
+namespace Meoweb.Example.Models {
 
-    public class SampleDataModel {
+    // 範本資料模型
+    public class ExampleDataModels {
         
-        // 通用資料
-        public class Data {
+        // 一般資料模型()
+        public class Demo {
             // 綜合查詢 (查詢時需要的必備資料)
             public struct Linq { // Linq >> Language Integrated Query
                 public string Data_A { get; set; }

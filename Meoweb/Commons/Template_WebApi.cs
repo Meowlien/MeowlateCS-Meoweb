@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Meoweb.AppLibs;
 
-using Meowkit.Logging;
-using IResult = Meoweb.Commons.Data.IResult;
+using Meoweb.AppLibs;
+using Meoweb.Extensions.Logging;    // Extensions Method
+using Meowkit.Logging;              // Formatter
 
 namespace Meoweb.Commons {
+    
+    using IResult = Data.IResult;
 
     /// <summary>
     /// WebApi 模板 ( 以 Json 進行交互 )

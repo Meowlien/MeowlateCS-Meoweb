@@ -1,10 +1,13 @@
-﻿using Meoweb.Commons;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System.Net;
+using Meoweb.Commons;
 
-namespace Meoweb.Middlewares {
-    public class SampleMiddleware : MiddlewareTemplate {
 
-        public SampleMiddleware(RequestDelegate next, ILogger<SampleMiddleware> logger, bool isReply)
+namespace Meoweb.Example.Middlewares {
+    public class ExampleMiddleware : MiddlewareTemplate {
+
+        public ExampleMiddleware(RequestDelegate next, ILogger<ExampleMiddleware> logger, bool isReply)
         : base(next, logger, isReply) {
             // do something.
         }
@@ -19,3 +22,4 @@ namespace Meoweb.Middlewares {
 
     }
 }
+

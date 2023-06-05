@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Meoweb.AppLibs;
 
 namespace Meoweb.Commons {
@@ -8,10 +9,9 @@ namespace Meoweb.Commons {
     /// </summary>
     public abstract class NpgsqlDbCtxTemplate : DbCtxTemplate {
 
-        #region Constructor 構建式
-        public NpgsqlDbCtxTemplate(ILogger<DbCtxTemplate> logger) : base(logger) { }
-        public NpgsqlDbCtxTemplate(DbContextOptions<DbCtxTemplate> options, ILogger<DbCtxTemplate> logger) : base(options, logger) { }
-        #endregion
+        public NpgsqlDbCtxTemplate(ILogger logger) : base(logger) { }
+        public NpgsqlDbCtxTemplate(DbContextOptions options, ILogger logger) : base(options, logger) { }
+
 
         /// <summary>
         /// 資料庫連綫設定

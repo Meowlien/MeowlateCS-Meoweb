@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Waylon\\Meowlien\\Workspace\\Projects\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj": {}
+    "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Tmp\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj": {}
   },
   "projects": {
-    "D:\\Waylon\\Meowlien\\Workspace\\Projects\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj": {
+    "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Tmp\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj",
+        "projectUniqueName": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Tmp\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj",
         "projectName": "Meoweb",
-        "projectPath": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj",
+        "projectPath": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Tmp\\MeowlateCs-Meoweb\\Meoweb\\Meoweb.csproj",
         "packagesPath": "C:\\Users\\waylon.yuen\\.nuget\\packages\\",
-        "outputPath": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\MeowlateCs-Meoweb\\Meoweb\\obj\\",
+        "outputPath": "D:\\Waylon\\Meowlien\\Workspace\\Projects\\Tmp\\MeowlateCs-Meoweb\\Meoweb\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -26,7 +26,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\sdk\\7.0.302\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -74,9 +73,6 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
-            "Microsoft.AspNetCore.App": {
-              "privateAssets": "none"
-            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

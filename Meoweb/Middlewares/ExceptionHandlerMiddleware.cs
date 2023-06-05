@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net;
+﻿using System.Net;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Meoweb.Commons;
 
-namespace Meoweb.Middlewares {
+namespace Meoweb.Example.Middlewares {
 
     public class ExceptionHandlerMiddleware : MiddlewareTemplate {
 

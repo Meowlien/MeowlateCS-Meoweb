@@ -1,19 +1,21 @@
-﻿using System.Text;
+﻿using Meoweb.Commons;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System.Text;
 
-namespace Meoweb.Middlewares {
+namespace Meoweb.Example.Middlewares {
 
-    public class RequestBodyReaderMiddleware {
+    public class RequestBodyReaderMiddleware : MiddlewareTemplate {
 
-        private readonly RequestDelegate _next;
-
-        public RequestBodyReaderMiddleware(RequestDelegate next) {
-            _next = next;
+        public RequestBodyReaderMiddleware(RequestDelegate next, ILogger<RequestBodyReaderMiddleware> logger, bool isReply = false)
+        : base(next, logger, isReply) {
+            // do something.
         }
 
-        public async Task Invoke(HttpContext context) {
+        public override async Task InvokeAsync(HttpContext context) {
             var request = context.Request;
             if (request.Method != HttpMethods.Post) {
-                await _next(context);
+                await next(context);
                 return;
             }
 
@@ -26,7 +28,7 @@ namespace Meoweb.Middlewares {
             //Console.WriteLine($"TTTT: {memoryStream.Length}");
 
             // 执行下一个中间件
-            await _next(context);
+            await next(context);
         }
 
     }

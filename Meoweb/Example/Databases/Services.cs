@@ -1,7 +1,7 @@
-﻿
-using Meoweb.Databases.Npgsql;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Meoweb.Example.Databases.Npgsql;
 
-namespace Meoweb.Databases {
+namespace Meoweb.Example.Databases {
 
     /// <summary>
     /// WebApplicationBuilder 拓展方法
@@ -16,8 +16,7 @@ namespace Meoweb.Databases {
 
             // 資料庫 NpgSQL
             // 直接複製多一行範例，然後將 '<xxx>' 尖括號中間的内容改成自己的 DbCtx
-            Services.AddEntityFrameworkNpgsql().AddDbContext<SampleDbCtx>();
-            Services.AddEntityFrameworkNpgsql().AddDbContext<UserManagerDbCtx>();
+            Services.AddEntityFrameworkNpgsql().AddDbContext<ExampleDbCtx>();
             // More...
 
         }
@@ -35,7 +34,8 @@ namespace Meoweb.Databases {
 
         }
 
-
     }
 
 }
+
+

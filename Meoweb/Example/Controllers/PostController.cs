@@ -1,27 +1,35 @@
 ﻿// #define LOCAL_DEBUG_API_OFF // API 開關
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using Meoweb.Commons;
-using Meoweb.Models;
-using Meoweb.Databases.Npgsql;
-using IResult = Meoweb.Commons.Data.IResult;
+using Microsoft.Extensions.Logging;
 
-namespace Meoweb.Controllers.UserManager {
+using Meoweb.Commons;
+using Meoweb.Example.Models;
+using Meoweb.Example.Databases.Npgsql;
+
+namespace Meoweb.Example.Controllers {
+
+    using IResult = Commons.Data.IResult;
 
     // For 資料模型
-    public partial class User_LoginController : WebApiTemplate
-        <User_LoginController.RequestDataModel, User_LoginController.ResponseDataModel> { 
+    public partial class Example_PostController : WebApiTemplate
+        <Example_PostController.RequestDataModel, Example_PostController.ResponseDataModel> {
 
         // 請求時-資料模型
         public struct RequestDataModel {
-            public string Id { get; set; }
-            public string Password { get; set; }
+            public string Data_A { get; set; } // 僅作參考
+            public string Data_B { get; set; } // 僅作參考
             // More... (自行添加: 請求時需要的資料欄位)
+
         }
+        
         // 回復時-資料模型
         public struct ResponseDataModel : IResult {
-            public string SessionKey { get; set; }
+            public string ResultData_A { get; set; } // 僅作參考
+            public string ResultData_B { get; set; } // 僅作參考
             // More... (自行添加: 回復時需要的資料欄位)
+
 
 
             /*  以下屬性慎改 *********************************/
@@ -35,6 +43,7 @@ namespace Meoweb.Controllers.UserManager {
                     + "}\n";
             }
         }
+
     }
 
     // For 請求  (前置檢查 & 響應)
@@ -44,21 +53,22 @@ namespace Meoweb.Controllers.UserManager {
     //[EnableCors("CorsPolicy")]      // 啓用-跨域策略 (似情況來指定策略，請遵循安全策略)
     //[Authorize]                     // 啓用-身份驗證 (驗證通過才能夠訪問此資源)
 #endif
-    public partial class User_LoginController {
+    public partial class Example_PostController {
 
         /// <summary>
-        /// API入口 ( 當收到請求時執行 )
+        /// >> Post 請求，數據在 FromBody (數據體)
         /// </summary>
-        /// <param name="value">請求内容</param>
+        /// <param name="value">Post 請求時，需提供的資料</param>
         /// <returns>響應結果</returns>
-        [HttpPost] // 請求數據在數據體
-        public virtual async Task<object> Login([FromBody] RequestDataModel value) {
+        [HttpPost]
+        public virtual async Task<object> Post([FromBody] RequestDataModel value) {
             // 0. 注意 >> 所有錯誤資訊由方法内部建立
 
-            RequestData = value; // 緩存-請求内容
+            // 1. 緩存-請求内容
+            RequestData = value;
 
-            // 解析-請求内容
-            if (await BuildRequest() == false) {
+            // 2. 解析-請求内容
+            if(await BuildRequest() == false) {
                 BuildResponse();        // 建立-響應(打包響應資訊)
                 return ResponseData;    // 回復結果 (成功/失敗)
             }
@@ -85,8 +95,8 @@ namespace Meoweb.Controllers.UserManager {
                 && DataDecription() == true
                 #endregion
             ) {
-                // 驗證用戶
-                if (AuthenticateUser() == true) {
+                // 呼叫資料庫
+                if (ProcessData() == true) {
                     BuildResult(WebApiResult.Code.Success);
                 }
             }
@@ -98,19 +108,18 @@ namespace Meoweb.Controllers.UserManager {
     }
 
     // For 構建式 (依賴注入 >> 注入資料庫)
-    public partial class User_LoginController : WebApiTemplate
-        <User_LoginController.RequestDataModel, User_LoginController.ResponseDataModel> {
+    public partial class Example_PostController {
 
-        protected UserManagerDbCtx UserMgrDbCtx { get; set; }
+        protected ExampleDbCtx ExampleDbCtx { get; set; }
 
         /// <summary>
         /// Constructor 構建式
         /// </summary>
         /// <param name="logger">依賴注入: 日志</param>
-        /// <param name="dbContext"></param>
-        public User_LoginController(ILogger<User_LoginController> logger, UserManagerDbCtx dbContext)
+        /// <param name="dbCtx"></param>
+        public Example_PostController(ILogger<Example_PostController> logger, ExampleDbCtx dbCtx)
             :base(logger, new RequestDataModel(), new ResponseDataModel()) {
-            UserMgrDbCtx = dbContext;
+            ExampleDbCtx = dbCtx;
         }
 
         /// <summary>
@@ -124,23 +133,26 @@ namespace Meoweb.Controllers.UserManager {
     }
 
     // For 處理  (資料庫查詢 & 處理業務邏輯)
-    public partial class User_LoginController {
+    public partial class Example_PostController {
 
-        // 用戶驗證
-        protected bool AuthenticateUser() {
+        // 處理資料：請命名與該請求相關的名稱
+        protected override bool ProcessData() {
             // 嘗試執行以下
             try {
                 // 呼叫資料庫
-                if(UserMgrDbCtx.UserLogin(new UserDataModels.UserLogin.Linq() {
-                    Id = RequestData.Id,
-                    Password = RequestData.Password,
+                if(ExampleDbCtx.GetDataByAny(new ExampleDataModels.Demo.Linq() {
+                    // 資料庫查詢所需參數
+                    Data_A = RequestData.Data_A,
+                    Data_B = RequestData.Data_B,
 
-                }, out UserDataModels.UserLogin.Result? data) == true) {
+                // 查詢成功
+                }, out ExampleDataModels.Demo.Result? data) == true) {
 
                     // 檢查：資料是否存在?
                     if (data != null) {
                         // 寫入-響應正文
-                        ResponseData.SessionKey = data.SessionKey; // 身份驗證令牌
+                        ResponseData.ResultData_A = data.ResultData_A;
+                        ResponseData.ResultData_B = data.ResultData_B;
                         return true; // 返回成功
                     }
 
@@ -150,13 +162,14 @@ namespace Meoweb.Controllers.UserManager {
                     return false; // 返回失敗
                 }
 
-                // 查詢失敗，沒有相關 or 符合條件的資料
+                // 查詢失敗：沒有相關 or 符合條件的資料
                 BuildResult(WebApiResult.Code.Fail, "Cannot Found.");
                 return false; // 返回失敗
             }
 
-            // 捕獲例外狀況
+            // 捕獲：例外狀況
             catch (Exception ex) {
+
 #pragma warning disable CA2254
                 Logger.LogError(ex.Message);
                 Logger.LogError(ex.StackTrace);
@@ -175,3 +188,5 @@ namespace Meoweb.Controllers.UserManager {
     }
 
 }
+
+

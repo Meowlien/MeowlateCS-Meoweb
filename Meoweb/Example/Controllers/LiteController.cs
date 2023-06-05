@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Meoweb.Controllers {
+namespace Meoweb.Example.Controllers {
 
-    public class HomeController : Controller {
+    public class LiteController : Controller {
         
         public string Index() {
             return "This is Home Index";
@@ -10,3 +10,4 @@ namespace Meoweb.Controllers {
 
     }
 }
+

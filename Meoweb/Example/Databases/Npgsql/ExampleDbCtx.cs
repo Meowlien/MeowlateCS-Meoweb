@@ -2,10 +2,11 @@
 
 using Npgsql;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Meoweb.Commons;
-using Meoweb.Models;
+using Meoweb.Example.Models;
 
-namespace Meoweb.Databases.Npgsql {
+namespace Meoweb.Example.Databases.Npgsql {
 
     // For 構建
     /// <summary>
@@ -22,34 +23,34 @@ namespace Meoweb.Databases.Npgsql {
     /// <br></br>
     /// 
     /// <br>繼承關係：</br>
-    ///     <br> - <see cref="SampleDbCtx" /> ( 此類別：僅支援 Npgsql 資料庫的上下文 ) </br>
+    ///     <br> - <see cref="ExampleDbCtx" /> ( 此類別：僅支援 Npgsql 資料庫的上下文 ) </br>
     ///     <br> - <see cref="NpgsqlDbCtxTemplate" /> ( Npgsql 資料庫上下文-模板 ) </br>
     ///     <br> - <see cref="DbCtxTemplate" /> ( 資料庫上下文通用型-模板 ) </br>
     ///     <br> - <see cref="DbContext" /> ( Supporter: Microsoft's Entity Framework Core 微軟支援的資料庫實體框架核心 ) </br>
     /// <br></br>
     /// 
     /// </remarks>
-    public partial class SampleDbCtx : NpgsqlDbCtxTemplate {
-        public SampleDbCtx(ILogger<DbCtxTemplate> logger)
+    public partial class ExampleDbCtx : NpgsqlDbCtxTemplate {
+        public ExampleDbCtx(ILogger<ExampleDbCtx> logger)
             : base(logger) {
         }
-        public SampleDbCtx(DbContextOptions<DbCtxTemplate> options, ILogger<DbCtxTemplate> logger)
+        public ExampleDbCtx(DbContextOptions<ExampleDbCtx> options, ILogger<ExampleDbCtx> logger)
             : base(options, logger) {
         }
     }
 
     // For 結果資料模型  (承載體)
-    public partial class SampleDbCtx : NpgsqlDbCtxTemplate {
-        public DbSet<SampleDataModel.Data.Result> DataResultModel { get; set; } // 命名規範：<後綴> ResultModel
+    public partial class ExampleDbCtx : NpgsqlDbCtxTemplate {
+        public DbSet<ExampleDataModels.Demo.Result> DemoResultModel { get; set; } // 命名規範：<後綴> ResultModel
         // More...
     }
 
     // For 服務  (業務邏輯)
-    public partial class SampleDbCtx : NpgsqlDbCtxTemplate {
+    public partial class ExampleDbCtx : NpgsqlDbCtxTemplate {
 
         public bool GetUserById(                        // 回傳-是否成功
                 string id,                              // 接收-參數 >> id
-            out SampleDataModel.User? result            // 結果-資料
+            out ExampleDataModels.User? result          // 結果-資料
         ) {
 #if DEBUG_UseFakeData // 使用模擬資料
             // 創建結果
@@ -90,10 +91,10 @@ namespace Meoweb.Databases.Npgsql {
 
         public bool GetUserByAny(                           // 回傳-是否成功
                 string any,                                 // 接收-參數 >> any
-            out List<SampleDataModel.User>? resultList      // 結果-資料
+            out List<ExampleDataModels.User>? resultList    // 結果-資料
         ) {
 #if DEBUG_UseFakeData
-            resultList = Enumerable.Range(1, 5).Select(index => new SampleDataModel.User {
+            resultList = Enumerable.Range(1, 5).Select(index => new ExampleDataModels.User {
                 Id = "FakeData_123456",
                 Name = "FakeData_" + any,
                 Gender = "FakeData_Male",
@@ -129,9 +130,9 @@ namespace Meoweb.Databases.Npgsql {
 #endif
         }
 
-        public bool GetDataByAny(                       // 回傳-是否成功
-                SampleDataModel.Data.Linq parameter,    // 接收-參數
-            out SampleDataModel.Data.Result? result     // 結果-資料
+        public bool GetDataByAny(                         // 回傳-是否成功
+                ExampleDataModels.Demo.Linq parameter,    // 接收-參數
+            out ExampleDataModels.Demo.Result? result     // 結果-資料
         ) {
 
 #if DEBUG_UseFakeData // 使用模擬資料
@@ -173,3 +174,8 @@ namespace Meoweb.Databases.Npgsql {
     }
 
 }
+
+
+
+
+

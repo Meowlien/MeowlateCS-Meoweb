@@ -1,4 +1,6 @@
-﻿namespace Meoweb.Commons.Data {
+﻿
+
+namespace Meoweb.Commons.Data {
 
     /// <summary>
     /// 資訊界面

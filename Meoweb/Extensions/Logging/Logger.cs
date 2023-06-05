@@ -1,5 +1,6 @@
-﻿
-namespace Meoweb.AppLibs {
+﻿using Microsoft.Extensions.Logging;
+
+namespace Meoweb.Extensions.Logging {
 
     public static class LoggerExtensions {
 
@@ -9,5 +10,4 @@ namespace Meoweb.AppLibs {
         }
 
     }
-
 }

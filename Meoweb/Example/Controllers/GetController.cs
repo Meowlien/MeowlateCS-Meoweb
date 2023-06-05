@@ -1,17 +1,20 @@
 ﻿// #define LOCAL_DEBUG_API_OFF // API 開關
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using Meoweb.Commons;
-using Meoweb.Models;
-using Meoweb.Databases.Npgsql;
-using IResult = Meoweb.Commons.Data.IResult;
+using Microsoft.Extensions.Logging;
 
-// 注意: 此命名空間為：參考範本，禁止使用範本空間 ( 即：Sample 結尾的命名空間 )
-namespace Meoweb.Controllers.Sample {
+using Meoweb.Commons;
+using Meoweb.Example.Models;
+using Meoweb.Example.Databases.Npgsql;
+
+namespace Meoweb.Example.Controllers {
+
+    using IResult = Commons.Data.IResult;
 
     // For 資料模型
-    public partial class Sample_GetController : WebApiTemplate
-        <Sample_GetController.RequestDataModel, Sample_GetController.ResponseDataModel> {
+    public partial class Example_GetController : WebApiTemplate
+        <Example_GetController.RequestDataModel, Example_GetController.ResponseDataModel> {
 
         // 請求時-資料模型
         public struct RequestDataModel {
@@ -21,7 +24,7 @@ namespace Meoweb.Controllers.Sample {
 
         // 回復時-資料模型
         public struct ResponseDataModel : IResult {
-            public List<SampleDataModel.User> UserDataList { get; set; } // 僅作參考
+            public List<ExampleDataModels.User> UserDataList { get; set; } // 僅作參考
             // More... (自行添加: 回復時需要的資料欄位)
 
 
@@ -45,7 +48,7 @@ namespace Meoweb.Controllers.Sample {
     //[EnableCors("CorsPolicy")]      // 啓用-跨域策略 (似情況來指定策略，請遵循安全策略)
     //[Authorize]                     // 啓用-身份驗證 (驗證通過才能夠訪問此資源)
 #endif
-    public partial class Sample_GetController {
+    public partial class Example_GetController {
 
         [HttpGet("id/{id}")] // 路由範例 >> 呼叫：GET 'api/SampleUserData/id/123' 即： id = 123
         public virtual async Task<object> GetDataById(
@@ -134,18 +137,18 @@ namespace Meoweb.Controllers.Sample {
     }
 
     // For 構建式 (依賴注入 >> 注入資料庫)
-    public partial class Sample_GetController {
+    public partial class Example_GetController {
 
-        protected SampleDbCtx SampleDbCtx { get; set; }
+        protected ExampleDbCtx ExampleDbCtx { get; set; }
 
         /// <summary>
         /// Constructor 構建式
         /// </summary>
         /// <param name="logger">依賴注入: 日志</param>
         /// <param name="dbCtx"></param>
-        public Sample_GetController(ILogger<Sample_GetController> logger, SampleDbCtx dbCtx)
+        public Example_GetController(ILogger<Example_GetController> logger, ExampleDbCtx dbCtx)
             :base(logger, new RequestDataModel(), new ResponseDataModel()) {
-            SampleDbCtx = dbCtx;
+            ExampleDbCtx = dbCtx;
         }
 
         /// <summary>
@@ -159,19 +162,19 @@ namespace Meoweb.Controllers.Sample {
     }
 
     // For 處理  (資料庫查詢 & 處理業務邏輯)
-    public partial class Sample_GetController {
+    public partial class Example_GetController {
 
         protected bool TryGetDataById(string id) {
             // 嘗試呼叫-資料庫
             try {
 
                 // 呼叫資料庫 & 綜合查詢成功
-                if(SampleDbCtx.GetUserById(id, out SampleDataModel.User? record) == true) {
+                if(ExampleDbCtx.GetUserById(id, out ExampleDataModels.User? record) == true) {
                     // 檢查：資料是否存在?
                     if (record != null) {
                         // 寫入-響應正文
                         ResponseData.UserDataList = new(); // 創建一筆資料集
-                        var data = new SampleDataModel.User() { // 創建一筆記錄
+                        var data = new ExampleDataModels.User() { // 創建一筆記錄
                             Id = record.Id,
                             Name = record.Name,
                             Gender = record.Gender,
@@ -204,7 +207,7 @@ namespace Meoweb.Controllers.Sample {
                 BuildResult(WebApiResult.Code.CheckFailed_ValidData);
 #else
                 // undone
-                ResponseData = (ResponseDataModel)Result.BuildExceptionInfo(ResponseData);
+                //BuildResult(WebApiResult.Code.CheckFailed_ValidData);
 #endif
                 return false;
             }
@@ -215,13 +218,13 @@ namespace Meoweb.Controllers.Sample {
             try {
 
                 // 呼叫資料庫 & 綜合查詢成功
-                if(SampleDbCtx.GetUserByAny(any, out List<SampleDataModel.User>? dataList) == true) {
+                if(ExampleDbCtx.GetUserByAny(any, out List<ExampleDataModels.User>? dataList) == true) {
                     // 檢查：資料是否存在?
                     if (dataList != null) {
                         // 寫入-響應正文
                         ResponseData.UserDataList = new(); // 創建一筆資料集
                         foreach (var record in dataList) {
-                            var data = new SampleDataModel.User() { // 創建一筆記錄
+                            var data = new ExampleDataModels.User() { // 創建一筆記錄
                                 Id = record.Id,
                                 Name = record.Name,
                                 Gender = record.Gender,
@@ -263,3 +266,6 @@ namespace Meoweb.Controllers.Sample {
     }
 
 }
+
+
+

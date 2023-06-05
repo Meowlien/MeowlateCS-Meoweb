@@ -1,16 +1,19 @@
 ﻿#define LOCAL_DEBUG_API_OFF // API 開關
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
-using Meoweb.Commons;
-using Meoweb.Databases.Npgsql;
-using IResult = Meoweb.Commons.Data.IResult;
+using Microsoft.Extensions.Logging;
 
-// 注意: 此命名空間為：參考範本，禁止使用範本空間 ( 即：Sample 結尾的命名空間 )
-namespace Meoweb.Controllers.Sample {
+using Meoweb.Commons;
+using Meoweb.Example.Databases.Npgsql;
+
+namespace Meoweb.Example.Controllers {
+
+    using IResult = Commons.Data.IResult;
 
     // For 資料模型
-    public partial class SampleController : WebApiTemplate
-        <SampleController.RequestDataModel, SampleController.ResponseDataModel> {
+    public partial class AllController : WebApiTemplate
+        <AllController.RequestDataModel, AllController.ResponseDataModel> {
 
         // 請求時-資料模型
         public struct RequestDataModel {
@@ -53,7 +56,7 @@ namespace Meoweb.Controllers.Sample {
     [EnableCors("CorsPolicy")]      // 啓用-跨域策略 (似情況來指定策略，請遵循安全策略)
     //[Authorize]                     // 啓用-身份驗證 (驗證通過才能夠訪問此資源)
 #endif
-    public partial class SampleController {
+    public partial class AllController {
 
 #pragma warning disable CS1998 // Async 方法缺乏 'await' 運算子，將同步執行 
 
@@ -116,18 +119,18 @@ namespace Meoweb.Controllers.Sample {
     }
 
     // For 構建式 (依賴注入 >> 注入資料庫)
-    public partial class SampleController {
+    public partial class AllController {
 
-        protected SampleDbCtx SampleDbCtx { get; set; }
+        protected ExampleDbCtx ExampleDbCtx { get; set; }
 
         /// <summary>
         /// Constructor 構建式
         /// </summary>
         /// <param name="logger">依賴注入: 日志</param>
         /// <param name="dbCtx"></param>
-        public SampleController(ILogger<SampleController> logger, SampleDbCtx dbCtx)
+        public AllController(ILogger<AllController> logger, ExampleDbCtx dbCtx)
             :base(logger, new RequestDataModel(), new ResponseDataModel()) {
-            SampleDbCtx = dbCtx;
+            ExampleDbCtx = dbCtx;
         }
 
         /// <summary>
@@ -141,7 +144,7 @@ namespace Meoweb.Controllers.Sample {
     }
 
     // For 處理  (資料庫查詢 & 處理業務邏輯)
-    public partial class SampleController {
+    public partial class AllController {
 
         protected override bool ProcessData() {
             // 如果僅單一職責，請使用此方法
