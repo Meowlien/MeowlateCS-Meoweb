@@ -2,6 +2,9 @@
 
 namespace Meoweb.AppLibs {
 
+    /// <summary>
+    /// Meoweb App 參數
+    /// </summary>
     public static class AppSettings {
 
         /// <summary>
@@ -16,7 +19,9 @@ namespace Meoweb.AppLibs {
             "https://localhost:80",
         };
 
-        // 資料庫-連綫口號
+        /// <summary>
+        /// 資料庫-連綫口號
+        /// </summary>
         public static string DbConnectionStr { get; set; } = "";
 
     }

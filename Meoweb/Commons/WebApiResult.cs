@@ -1,37 +1,13 @@
-﻿namespace Meoweb.Commons {
+﻿using IResult = Meoweb.Commons.Data.IResult;
 
-    /// <summary>
-    /// 響應資訊界面
-    /// </summary>
-    public interface IResult {
-        public int ResultCode { get; set; }
-        public string ResultMsg { get; set; }
-        public string? ToString();
-    }
+// Todo: 此頁所有功能應遷移至 Meowkit 作爲 Common Method
+namespace Meoweb.Commons {
 
     // For 產生響應内容
     /// <summary>
     /// WebApi 響應資訊
     /// </summary>
     public static partial class WebApiResult {
-
-        /// <summary>
-        /// 響應資料模型
-        /// </summary>
-        /// <remarks>
-        /// 用於沒有響應資訊實例，卻又需要響應資料承載進行實體創建的途徑。
-        /// </remarks>
-        public struct Result : IResult {
-            int IResult.ResultCode { get; set; }
-            string IResult.ResultMsg { get; set; }
-            string IResult.ToString() {
-                IResult result = this;
-                return "\n" + base.ToString() + " {\n"
-                    + $"  >> ResultCode: {result.ResultCode}\n"
-                    + $"  >> ResultMsg: {result.ResultMsg}\n"
-                    + "}\n";
-            }
-        }
 
         /// <summary>
         /// 消息格式
@@ -47,7 +23,7 @@
         /// <param name="code">響應代碼</param>
         /// <param name="message">額外的響應消息</param>
         /// <param name="type">響應消息的格式</param>
-        public static void Build(ref IResult result, Code code, string? message = null,
+        public static void Build(IResult result, Code code, string? message = null,
             MsgFormatType type = MsgFormatType.Preset) {
 
             // 取得預設消息内容

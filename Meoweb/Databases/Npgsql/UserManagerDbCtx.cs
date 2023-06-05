@@ -5,26 +5,26 @@ using Microsoft.EntityFrameworkCore;
 using Meoweb.Commons;
 using Meoweb.Models;
 
-namespace Meoweb.Databases {
+namespace Meoweb.Databases.Npgsql {
 
     // 構建
-    public partial class Npgsql_UserManagerDbCtx : NpgsqlDbCtxTemplate {
-        public Npgsql_UserManagerDbCtx(ILogger<DbCtxTemplate> logger)
+    public partial class UserManagerDbCtx : NpgsqlDbCtxTemplate {
+        public UserManagerDbCtx(ILogger<DbCtxTemplate> logger)
             : base(logger) {
         }
-        public Npgsql_UserManagerDbCtx(DbContextOptions<DbCtxTemplate> options, ILogger<DbCtxTemplate> logger)
+        public UserManagerDbCtx(DbContextOptions<DbCtxTemplate> options, ILogger<DbCtxTemplate> logger)
             : base(options, logger) {
         }
     }
 
     // 結果資料模型  (承載體)
-    public partial class Npgsql_UserManagerDbCtx : NpgsqlDbCtxTemplate {
+    public partial class UserManagerDbCtx : NpgsqlDbCtxTemplate {
         public DbSet<UserDataModels.UserLogin.Result> UserLoginResultModel { get; set; }
         // More...
     }
 
     // 服務  (業務邏輯)
-    public partial class Npgsql_UserManagerDbCtx : NpgsqlDbCtxTemplate {
+    public partial class UserManagerDbCtx : NpgsqlDbCtxTemplate {
 
         /// <summary>
         /// 用戶-登入

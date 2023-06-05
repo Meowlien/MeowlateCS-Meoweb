@@ -1,4 +1,6 @@
 ﻿
+using Meoweb.Databases.Npgsql;
+
 namespace Meoweb.Databases {
 
     /// <summary>
@@ -14,8 +16,8 @@ namespace Meoweb.Databases {
 
             // 資料庫 NpgSQL
             // 直接複製多一行範例，然後將 '<xxx>' 尖括號中間的内容改成自己的 DbCtx
-            Services.AddEntityFrameworkNpgsql().AddDbContext<Sample.Npgsql_UserManagerDbCtx>();
-            Services.AddEntityFrameworkNpgsql().AddDbContext<Npgsql_UserManagerDbCtx>();
+            Services.AddEntityFrameworkNpgsql().AddDbContext<SampleDbCtx>();
+            Services.AddEntityFrameworkNpgsql().AddDbContext<UserManagerDbCtx>();
             // More...
 
         }

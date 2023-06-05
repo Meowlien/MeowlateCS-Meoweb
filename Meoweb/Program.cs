@@ -1,16 +1,22 @@
 ﻿using System.Text;
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-
-using Meoweb.Middlewares;
 using Meoweb.AppLibs;
 using Meoweb.Databases;
+using Meoweb.Middlewares;
 
 // Main Program
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("https://localhost:5000");
 
+#region Add services to the container.
+
+/************************************************
+* Configuration
+*/
 var environment = builder.Environment;
 var configuration = builder.Configuration;
 configuration.SetBasePath(environment.ContentRootPath);
@@ -18,8 +24,9 @@ configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: tr
 configuration.AddJsonFile($"appsettings.{environment.EnvironmentName}.json", optional: true);
 configuration.AddEnvironmentVariables();
 
-#region Add services to the container.
-
+/************************************************
+* Contorller
+*/
 builder.Services.AddControllers();
 //builder.Services.AddControllersWithViews(); // 控制器路由視圖服務 index.cshtml
 
@@ -33,8 +40,31 @@ builder.Services.AddMvcCore().AddNewtonsoftJson();
 */
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
+
     // 避免 Swagger 的 SchemaId 相同 (以'名稱_Id'避免相同名稱)
-    options.CustomSchemaIds(type => $"{type.Name}_{Guid.NewGuid()}");
+    options.CustomSchemaIds(type => $"{type.Name}_{Guid.NewGuid()}"); // Opt
+    
+    // API 服務簡介
+    options.SwaggerDoc("v1", new OpenApiInfo {
+        Version = "v1",
+        Title = "Meoweb API",
+        Description = "Meoweb API Sample",
+        TermsOfService = new Uri("https://github.com/Meowlien"),
+        //Contact = new OpenApiContact {
+        //    Name = "Igouist",
+        //    Email = string.Empty,
+        //    Url = new Uri("https://github.com/Meowlien"),
+        //},
+        //License = new OpenApiLicense {
+        //    Name = "TEST",
+        //    Url = new Uri("https://github.com/Meowlien"),
+        //}
+    });
+
+    // 讀取 XML 檔案產生 API 說明
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
 });
 
 /************************************************
@@ -104,25 +134,43 @@ builder.Services.AddNpgsql();   // Postgre-SQL
 //builder.Services.AddMSSQL();    // MS-SQL
 
 /************************************************
-* Others | Test
+* Others
 */
 
 // 設定請求正文最大緩衝區大小
 builder.Services.Configure<IISServerOptions>(options  => {
     options.MaxRequestBodyBufferSize = AppSettings.MaxRequestBodyBufferSize;
 });
+// 依賴注入: ILogger
+builder.Services.AddLogging();
 
-builder.Services.AddLogging(); // 依賴注入: ILogger
-var app = builder.Build();
+/************************************************
+* 注冊：自定義
+*/
+// Transient    一次性：每次注入都建立一個新的
+// Scoped       作用域：每次 Request 都建立一個新的，同個 Request 重複利用同一個
+// Singleton    單例：只建立一個新的，每次都重複利用同一個
+// builder.Services.AddScoped<契約, 履行者>(); // <Interface, Object:Interface>
+// Object.Constructor(Interface i) => private readonly Interface itrf = i;
+
 #endregion
+
+var app = builder.Build();
 
 #region Configure the HTTP request pipeline.
 
 // 是否在開發環境中運行
 if (app.Environment.IsDevelopment()) {
-    app.UseDeveloperExceptionPage(); // 提供錯誤詳細訊息
+    app.UseDeveloperExceptionPage();                      // 提供錯誤詳細訊息 (已被取代：ExceptionHandlerMiddleware)
+    app.UseExceptionHandler("/error");                      // 指定異常處理的路徑
+    //app.UseMiddleware<ExceptionHandlerMiddleware>(true);    // 添加自定義異常處理中間件 (true: 提供錯誤詳細訊息)
+
     app.UseSwagger();                // 啓用-Swagger API 測試頁面
-    app.UseSwaggerUI();              // '''
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(options => {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Meoweb V1");
+        //options.RoutePrefix = "/api"; // 指定路徑為 "" >> BUG: 還無法使用
+    });
 }
 
 /************************************************
@@ -173,5 +221,6 @@ app.MapControllerRoute(             // 預設 URL 路由頁面 index.cshtml   [S
 * IHostBuilder
 */
 
-app.Run();
 #endregion
+
+app.Run();

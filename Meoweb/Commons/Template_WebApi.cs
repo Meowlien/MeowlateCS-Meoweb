@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Meoweb.AppLibs;
+
 using Meowkit.Logging;
+using IResult = Meoweb.Commons.Data.IResult;
 
 namespace Meoweb.Commons {
 
@@ -13,41 +15,25 @@ namespace Meoweb.Commons {
     /// <typeparam name="TResponseData">響應内容</typeparam>
     public abstract partial class WebApiTemplate<TRequestData, TResponseData> : Controller, IResult
         where TRequestData : struct
-        where TResponseData : struct {
+        where TResponseData : IResult {
 
         #region Properties 屬性
-        int IResult.ResultCode { get; set; } = -1;
-        string IResult.ResultMsg { get; set; } = "";
-
-        protected abstract ILogger Logger { get; set; }
+        public int ResultCode { get; set; } = -1;
+        public string ResultMsg { get; set; } = "";
+        protected ILogger Logger { get; set; }
         protected JObject? JObjRequestData { get; set; } // 用於身份檢查
-        protected TRequestData RequestData { get; set; }
-#pragma warning disable CS8618
-        /*  **** 屏蔽-系統警告 CS8618 ****
-        *   由於 RequestRouteValues 不能為 Null，系統建議設定為 RouteValueDictionary? RequestRouteValues;
-        *   交由 BuildRequest 時，取得對應的實體參考
-        */
-        protected RouteValueDictionary RequestRouteValues { get; set; } // 請求參數, 用來記錄 URL 附加參數
-#pragma warning restore CS8618
-        // 需直接改動内容，因此屬性作爲值類型並不適合, 但爲了可讀性及一致性，變數名稱依舊以屬性命名慣例
-        protected TResponseData ResponseData = new(); // { get; set; }
+        protected RouteValueDictionary? RequestRouteValues { get; set; } // 請求參數, 用來記錄 URL 附加參數
         #endregion
 
-#pragma warning disable CS8618
-        /*  **** 屏蔽-系統警告 CS8618 ****
-        *   由於 result 不能為 Null，系統建議設定為 IResult? result;
-        *   但由於此模板為抽象類，無法實例化，因此 result 在此無法取得實體
-        *   交由子類調用 Initialize 方法進行設定
-        */
-        protected IResult result;
-#pragma warning restore CS8618
+        // 需直接改動内容，因此屬性作爲值類型並不適合, 但爲了可讀性及一致性，變數名稱依舊以屬性命名慣例
+        protected TRequestData RequestData; // { get; set; }
+        protected TResponseData ResponseData; // { get; set; }
+        
 
-        /// <summary>
-        /// 初始化設定
-        /// </summary>
-        /// <param name="result">響應資訊實例</param>
-        protected virtual void Initialize(IResult result) {
-            this.result = result;
+        public WebApiTemplate(ILogger logger, TRequestData requestData, TResponseData responseData) {
+            Logger = logger;
+            RequestData = requestData;
+            ResponseData = responseData;
         }
 
         #region PreCheck 前置檢查
@@ -135,13 +121,13 @@ namespace Meoweb.Commons {
         /// <returns>是否符合及携帶跨域來源</returns>
         protected virtual bool CheckHasCorsPolicy() {
             return true; // Undone: 未準備好跨域許可
-            if (AppSettings.Origins.Contains(Request.Headers["Origin"].ToString()) == false) {
-                BuildResult(WebApiResult.Code.CheckFailed_CorsPolicy,
-                    $"Request is not valid! origin:{Request.Headers["Origin"]} not in List:AppSettings.Origins"
-                );
-                return false;
-            }
-            return true;
+            //if (AppSettings.Origins.Contains(Request.Headers["Origin"].ToString()) == false) {
+            //    BuildResult(WebApiResult.Code.CheckFailed_CorsPolicy,
+            //        $"Request is not valid! origin:{Request.Headers["Origin"]} not in List:AppSettings.Origins"
+            //    );
+            //    return false;
+            //}
+            //return true;
         }
         /// <summary>
         /// Redis高速資料庫-資料比對
@@ -219,11 +205,15 @@ namespace Meoweb.Commons {
             Logger.LogInformation(logPkg.ToString());
             return true;
         }
-        //protected virtual 
+
         /// <summary>
         /// 建立-響應内容
         /// </summary>
-        protected abstract void BuildResponse();
+        protected virtual void BuildResponse() {
+            ResponseData.ResultCode = ResultCode;
+            ResponseData.ResultMsg = ResultMsg;
+        }
+
         #endregion
 
         #region Tools 其他工具方法
@@ -231,11 +221,13 @@ namespace Meoweb.Commons {
         /// 建立-響應資訊
         /// </summary>
         /// <param name="code">響應代碼</param>
-        /// <param name="msg">響應消息</param>
+        /// <param name="message">響應消息</param>
+        /// <param name="type"></param>
         protected virtual void BuildResult(WebApiResult.Code code, string? message = null,
             WebApiResult.MsgFormatType type = WebApiResult.MsgFormatType.Preset) {
-            WebApiResult.Build(ref result, code, message, type);
+            WebApiResult.Build(this, code, message, type);
         }
+        
         /// <summary>
         /// 一般日志記錄
         /// </summary>
